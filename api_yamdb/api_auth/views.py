@@ -18,12 +18,12 @@ class TokenView(TokenObtainPairView):
 def auth_view(request):
     serialized = AuthSerializer(data=request.data)
     if not serialized.is_valid():
-        if serialized.errors['email'][0].code == 'unique':
-            user = User.objects.get(email=request.data.get('email'))
-            password = UserManager.make_random_password(user)
-            user.set_password(password)
-            return Response({serialized.data.get('email'): 'Проверьте свою почту'})
-        return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not serialized.errors['email'][0].code == 'unique':
+            return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.get(email=request.data.get('email'))
+        password = UserManager.make_random_password(user)
+        user.set_password(password)
+        return Response({serialized.data.get('email'): 'Проверьте свою почту'})
     User.objects.create_user(
         email=serialized.data.get('email'),
     )
