@@ -41,7 +41,11 @@ class TokenSerializer(TokenObtainSlidingSerializer):
         return data
 
 
-class AuthSerializer(serializers.ModelSerializer):
+class AuthSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email',)
+        fields = ('first_name', 'last_name', 'username', 'bio', 'email', 'role')

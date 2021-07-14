@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.contrib.auth.models import AbstractUser, UnicodeUsernameValidator
 from django.utils.translation import ugettext_lazy as _
 
@@ -45,20 +44,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email[:20]
-
-
-from django.contrib.auth import get_user_model
-from django.contrib.auth.backends import ModelBackend
-
-
-class EmailOrUsernameModelBackend(ModelBackend):
-    def authenticate(self, request, email=None, password=None, username=None, **kwargs):
-        UserModel = get_user_model()
-        try:
-            user = UserModel.objects.get(Q(email=email) | Q(email=username))
-        except UserModel.DoesNotExist:
-            return None
-        else:
-            if user.check_password(password):
-                return user
-        return None

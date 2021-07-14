@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -132,6 +132,10 @@ REST_FRAMEWORK = {
          'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+SIMPLE_JWT = {
+    'SLIDING_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=2),
+}
 AUTH_USER_MODEL = 'api_auth.User'
-AUTHENTICATION_BACKENDS= ('api_auth.models.EmailOrUsernameModelBackend',)
+AUTHENTICATION_BACKENDS = ('api_auth.backend_auth.EmailOrUsernameModelBackend',)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
