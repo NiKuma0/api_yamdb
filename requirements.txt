@@ -10,3 +10,5 @@ pytest
 pytest-pythonpath==0.7.3
 pytest-django
 djangorestframework
+djangorestframework-simplejwt==4.7.2
+PyJWT==2.1.0
