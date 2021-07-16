@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import datetime
 import os
 from datetime import timedelta
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'api_auth',
     'api_titles',
     'api_review',
@@ -137,9 +138,18 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
 }
-
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=2),
 }
+AUTH_USER_MODEL = 'api_auth.User'
+AUTHENTICATION_BACKENDS = ('api_auth.backend_auth.EmailOrUsernameModelBackend',)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+USER_ROLES = (
+        ('user', 'Пользователь',),
+        ('moderator', 'Модератор',),
+        ('admin', 'Администратор',),
+    )

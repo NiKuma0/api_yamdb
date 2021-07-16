@@ -29,8 +29,4 @@ class GenresViewSet(RestViewSets):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
-
-
-
-
-
+    

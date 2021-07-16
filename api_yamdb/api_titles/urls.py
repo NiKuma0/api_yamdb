@@ -12,4 +12,5 @@ router.register('categories', CategoriesViewSet, basename='categories')
 
 urlpatterns = [
     path('v1/', include(router.urls)),
+    path('', include('api_review.urls'))
 ]
