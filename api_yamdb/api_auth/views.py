@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 
+from .permissions import IsAdmin
 from .serializers import TokenSerializer, AuthSerializer, UserSerializer
 from .managers import UserManager
 
@@ -28,8 +29,7 @@ class AuthVIew(APIView):
             user.save()
             return Response({serializer.data.get('email'): 'Проверьте свою почту'})
         except User.DoesNotExist:
-            User.objects.create_user(
-                email=serializer.data.get('email'))
+            User.objects.create_user(**serializer.data)
             return Response({serializer.data.get('email'): 'Проверьте свою почту'}, status=status.HTTP_201_CREATED)
 
 
@@ -47,6 +47,11 @@ class UserMeView(mixins.RetrieveModelMixin,
 class UsersView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAdminUser,)
+    permission_classes = (IsAdmin,)
     lookup_field = 'username'
+
+    def get_serializer(self, *args, **kwargs):
+        serializer = self.serializer_class
+        serializer.Meta.read_only_fields = []
+        return serializer(*args, **kwargs)
 
