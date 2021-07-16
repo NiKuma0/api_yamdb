@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import mixins, viewsets
 from rest_framework.filters import SearchFilter
 
-from api_titles.models import Categories, Genres, Titles
-from api_titles.serializer import CategoriesSerializer, GenresSerializer, TitlesSerializer
+from .models import Categories, Genres, Titles
+from .serializer import CategoriesSerializer, GenresSerializer, TitlesSerializer
 
 
 class RestViewSets(mixins.ListModelMixin,
@@ -20,6 +20,7 @@ class CategoriesViewSet(RestViewSets):
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
 
+
 class GenresViewSet(RestViewSets):
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
@@ -29,4 +30,4 @@ class GenresViewSet(RestViewSets):
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
-    
+    serializer_class = TitlesSerializer
