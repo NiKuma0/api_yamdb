@@ -12,5 +12,5 @@ urlpatterns = [
     path('v1/auth/token/', TokenView.as_view(), name='token_obtain_pair'),
     path('v1/users/me/', UserMeView.as_view({'get': 'retrieve', 'patch': 'partial_update'}), name='users_me'),
     path('v1/', include(users_router.urls)),
-    # path('v1/users/me/', UserMeView.as_view({'get': 'retrieve', 'patch': 'update'})),
+    path('', include('api_titles.urls'))
 ]
