@@ -1,3 +1,4 @@
+import csv
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -76,3 +77,18 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email[:20]
+
+
+def create_users_from_csv_file(path='data/users.csv'):
+    with open(path) as file:
+        reader = csv.reader(file)
+        keys = ('id', 'username', 'email', 'role', 'bio', 'first_name', 'last_name')
+        for row in reader:
+            print(row)
+            if row[0] == 'id':
+                continue
+            fields = {keys: values for keys, values in zip(keys, row)}
+            fields['pk'] = int(fields['pk'])
+            User.objects.create_user(**fields)
+
+
