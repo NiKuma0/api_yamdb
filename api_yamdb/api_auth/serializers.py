@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import (
-    PasswordField, TokenObtainPairSerializer)
+    PasswordField, TokenObtainPairSerializer, TokenObtainSlidingSerializer)
 
 User = get_user_model()
 
 
-class TokenSerializer(TokenObtainPairSerializer):
+class TokenSerializer(TokenObtainSlidingSerializer):
     def __init__(self, *args, **kwargs):
         super(serializers.Serializer, self).__init__(*args, **kwargs)
         self.fields[self.username_field] = serializers.CharField()
