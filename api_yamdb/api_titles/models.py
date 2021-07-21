@@ -1,5 +1,4 @@
 from datetime import datetime
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.db import models
 from django.core.validators import MaxValueValidator
@@ -12,20 +11,26 @@ class Categories(models.Model):
     class Meta:
         ordering = ("name",)
 
+    def __str__(self):
+        return self.name[:20]
+
 
 class Genres(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
 
     class Meta:
         ordering = ("name",)
+
+    def __str__(self):
+        return self.name[:20]
 
 
 class Titles(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(datetime.now().year)],
+        # validators=[MaxValueValidator(datetime.now().year, message='')],
         blank=True,
         null=True
     )

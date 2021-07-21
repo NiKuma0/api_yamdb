@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import mixins, viewsets, permissions
 from rest_framework.filters import SearchFilter
 
@@ -32,10 +31,23 @@ class CategoriesViewSet(RestViewSets):
 class GenresViewSet(RestViewSets):
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
+    lookup_field = 'slug'
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
+    permission_classes = (IsAdmin,)
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny(), ]
+        return super(GenresViewSet, self).get_permissions()
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
+    permission_classes = (IsAdmin,)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny(),]
+        return super(TitleViewSet, self).get_permissions()

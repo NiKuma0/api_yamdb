@@ -16,6 +16,7 @@ class TokenView(TokenViewBase):
 
 class AuthVIew(APIView):
     serializer_class = AuthSerializer
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
