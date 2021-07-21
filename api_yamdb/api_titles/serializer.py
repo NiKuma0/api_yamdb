@@ -1,12 +1,14 @@
 from django.db.models import fields
 from rest_framework import serializers
+# from rest_framework.validators import
 
-from api_titles.models import Categories, Genres, Titles
+from .models import Categories, Genres, Titles
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
-    fields = "__all__"
-    model = Categories
+    class Meta:
+        fields = ('name', 'slug')
+        model = Categories
 
 
 class GenresSerializer(serializers.ModelSerializer):

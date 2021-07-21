@@ -7,7 +7,7 @@ from django.core.validators import MaxValueValidator
 
 class Categories(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
 
     class Meta:
         ordering = ("name",)

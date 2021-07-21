@@ -24,7 +24,7 @@ class User(AbstractUser):
         max_length=150,
         unique=True,
         help_text=_('Обязательное поле! 150 символов или меньше. Буквы, цифры и @ /./+/-/_'),
-        validators=[UnicodeUsernameValidator()],
+        validators=(UnicodeUsernameValidator(),),
         error_messages={
             'unique': _('Пользователь с таким никнеймом уже существует.'),
         },
@@ -33,7 +33,11 @@ class User(AbstractUser):
     )
     bio = models.CharField(_('О себе.'), max_length=150, blank=True)
     role = models.CharField(choices=roles, default=roles[0][0], max_length=30)
-    confirmation_code = models.CharField(_('confirmation_code'), max_length=128, null=True, blank=True)
+    confirmation_code = models.CharField(
+        _('confirmation_code'),
+        max_length=128,
+        default=get_random_string(4, '0123456789')
+    )
     _confirmation_code = None
 
     objects = UserManager()

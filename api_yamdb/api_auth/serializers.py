@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import (
 User = get_user_model()
 
 
-class TokenSerializer(TokenObtainSlidingSerializer):
+class TokenSerializer(TokenObtainPairSerializer):
     def __init__(self, *args, **kwargs):
         super(serializers.Serializer, self).__init__(*args, **kwargs)
         self.fields[self.username_field] = serializers.CharField()
