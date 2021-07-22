@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+
+from api_titles.models import Titles  # noqa
 from .serializers import ReviewSerializer, CommentSerializer
 from .permissions import ReviewAndCommentPermissions
-from api_titles.models import Titles # noqa
 from .models import Review
 
 

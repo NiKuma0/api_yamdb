@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from .models import Review, Comment
-from api_titles.models import Titles # noqa
 from rest_framework.validators import UniqueTogetherValidator
+
+from .models import Review, Comment
+from api_titles.models import Titles  # noqa
 
 
 class CurrentTitleDefault:

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Genres, Categories, Titles
-from api_auth.permissions import is_moderator_role  # noqa
 
 
 @admin.register(Categories)
