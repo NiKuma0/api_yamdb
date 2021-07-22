@@ -1,22 +1,22 @@
 from rest_framework import status, viewsets, permissions, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenViewBase
 from django.contrib.auth import get_user_model
 
 from .permissions import IsAdmin
 from .serializers import TokenSerializer, AuthSerializer, UserSerializer
-from .managers import UserManager
 
 User = get_user_model()
 
 
-class TokenView(TokenObtainPairView):
+class TokenView(TokenViewBase):
     serializer_class = TokenSerializer
 
 
 class AuthVIew(APIView):
     serializer_class = AuthSerializer
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -24,12 +24,25 @@ class AuthVIew(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = User.objects.get(email=request.data.get('email'))
-            password = UserManager.make_random_password(user)
-            user.set_password(password)
-            user.save()
+            user.set_confirmation_code()
+            confirmation_code = user._confirmation_code
+            user.save(update_fields=('confirmation_code',))
+            user.email_user(
+                user.get_full_name(),
+                f'Ваш код: {confirmation_code}'
+            )
             return Response({serializer.data.get('email'): 'Проверьте свою почту'})
         except User.DoesNotExist:
-            User.objects.create_user(**serializer.data)
+            user = User.objects.create_user(username=User.make_random_username(), **serializer.data)
+            user.set_confirmation_code()
+            user.email_user(
+                user.get_full_name(),
+                ('Регистрация прошла успешно!\n'
+                 'Для выс мы сгенерировали пароль и никнейм!\n'
+                 f'Ваш никнейм: {user.username}\n'
+                 f'Ваш код: {user._confirmation_code}')
+            )
+            user.save(update_fields=('confirmation_code',))
             return Response({serializer.data.get('email'): 'Проверьте свою почту'}, status=status.HTTP_201_CREATED)
 
 
@@ -54,4 +67,3 @@ class UsersView(viewsets.ModelViewSet):
         serializer = self.serializer_class
         serializer.Meta.read_only_fields = []
         return serializer(*args, **kwargs)
-
