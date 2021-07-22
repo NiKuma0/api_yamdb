@@ -1,29 +1,27 @@
-from datetime import datetime
-
 from django.db import models
-from django.core.validators import MaxValueValidator
+# from django.core.validators import MaxValueValidator
 
 
 class Categories(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, primary_key=True)
 
     class Meta:
         ordering = ("name",)
 
     def __str__(self):
-        return self.name[:20]
+        return self.slug[:20]
 
 
 class Genres(models.Model):
     name = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, primary_key=True)
 
     class Meta:
         ordering = ("name",)
 
     def __str__(self):
-        return self.name[:20]
+        return self.slug[:20]
 
 
 class Titles(models.Model):
@@ -45,3 +43,6 @@ class Titles(models.Model):
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return self.name[:20]

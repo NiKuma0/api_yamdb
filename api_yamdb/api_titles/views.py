@@ -1,4 +1,5 @@
 from rest_framework import mixins, viewsets, permissions
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 
 from api_auth.permissions import IsAdmin  # noqa
@@ -46,8 +47,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
     permission_classes = (IsAdmin,)
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name',)
+    filterset_fields = ('genre', 'category', 'year',)
     
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny(),]
+            return [permissions.AllowAny()]
         return super(TitleViewSet, self).get_permissions()

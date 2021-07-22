@@ -1,19 +1,17 @@
-from django.db.models import fields
 from rest_framework import serializers
-# from rest_framework.validators import
 
 from .models import Categories, Genres, Titles
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'slug')
+        fields = '__all__'
         model = Categories
 
 
 class GenresSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'slug')
+        fields = '__all__'
         model = Genres
 
 
@@ -23,7 +21,6 @@ class TitlesSerializer(serializers.ModelSerializer):
         slug_field='slug',
         many=True
     )
-    # genre = GenresSerializer(many=True)
     category = serializers.SlugRelatedField(
         queryset=Categories.objects.all(),
         slug_field='slug'
@@ -34,10 +31,8 @@ class TitlesSerializer(serializers.ModelSerializer):
         model = Titles
         relations = ('category',)
 
-    def create(self, validated_data):
-        genre = validated_data.pop('genre', (None,))
-        instance = super(TitlesSerializer, self).create(validated_data)
-        genre = Genres.objects.filter(slug__in=genre)
-        instance.genre.set(genre)
-        return instance
-# "genre": ["action", "fps"]
+    def to_representation(self, instance):
+        res = super(TitlesSerializer, self).to_representation(instance)
+        res['category'] = CategoriesSerializer(instance=instance.category).data
+        res['genre'] = GenresSerializer(instance=instance.genre, many=True).data
+        return res
