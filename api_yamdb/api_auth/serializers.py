@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import (
-    PasswordField, TokenObtainPairSerializer)
+    PasswordField, TokenObtainPairSerializer
+)
 
 User = get_user_model()
 
@@ -25,5 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'username', 'bio', 'email', 'role')
+        fields = (
+            'first_name', 'last_name',
+            'username', 'bio',
+            'email', 'role'
+        )
         read_only_fields = ('role',)

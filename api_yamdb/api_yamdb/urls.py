@@ -24,5 +24,6 @@ urlpatterns = [
         TemplateView.as_view(template_name='redoc.html'),
         name='redoc'
     ),
-    path('api/', include('api_auth.urls'))
+    path('api/', include('api_auth.urls')),
+    path('api/', include('api_review.urls'))
 ]

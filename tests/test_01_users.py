@@ -84,6 +84,7 @@ class Test01UserAPI:
 
     @pytest.mark.django_db(transaction=True)
     def test_05_users_post_auth(self, user_client, admin):
+        print(user_client)
         data = {}
         response = user_client.post('/api/v1/users/', data=data)
         assert response.status_code == 400, (
