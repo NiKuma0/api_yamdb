@@ -15,14 +15,6 @@ class IsAdmin(permissions.BasePermission):
         is_auth = bool(request.user and request.user.is_authenticated)
         return is_auth and request.user.role in roles[2:]
 
-    # def has_object_permission(self, request, view, obj):
-    #     try:
-    #         perm = bool(request.method != 'PATCH' or obj.role not in roles[2:])
-    #         print(perm, request.method, obj.role)
-    #         return perm
-    #     except AttributeError:
-    #         return True
-
 
 def is_moderator_role(role):
     return role in roles[1:]

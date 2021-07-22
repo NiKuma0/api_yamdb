@@ -4,7 +4,10 @@ from rest_framework.filters import SearchFilter
 
 from api_auth.permissions import IsAdmin  # noqa
 from .models import Categories, Genres, Titles
-from .serializer import CategoriesSerializer, GenresSerializer, TitlesSerializer
+from .filters import FilterSetTitle
+from .serializer import (
+    CategoriesSerializer, GenresSerializer, TitlesSerializer
+)
 
 
 class RestViewSets(mixins.ListModelMixin,
@@ -13,7 +16,7 @@ class RestViewSets(mixins.ListModelMixin,
                    viewsets.GenericViewSet):
 
     pass
-    
+
 
 class CategoriesViewSet(RestViewSets):
     queryset = Categories.objects.all()
@@ -47,10 +50,9 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
     permission_classes = (IsAdmin,)
-    filter_backends = (DjangoFilterBackend, SearchFilter)
-    search_fields = ('name',)
-    filterset_fields = ('genre', 'category', 'year',)
-    
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = FilterSetTitle
+
     def get_permissions(self):
         if self.request.method == 'GET':
             return [permissions.AllowAny()]

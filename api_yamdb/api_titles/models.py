@@ -24,6 +24,33 @@ class Genres(models.Model):
         return self.slug[:20]
 
 
+# =======
+# from django.core.validators import MaxValueValidator
+#
+#
+# class Categories(models.Model):
+#     name = models.CharField(max_length=200)
+#     slug = models.SlugField(unique=True)
+#
+#     class Meta:
+#         ordering = ("name",)
+#
+#     def __str__(self):
+#         return self.name[:20]
+#
+#
+# class Genres(models.Model):
+#     name = models.CharField(max_length=200)
+#     slug = models.SlugField(unique=True)
+#
+#     class Meta:
+#         ordering = ("name",)
+#
+#     def __str__(self):
+#         return self.name[:20]
+#
+#
+# >>>>>>> origin/api_review
 class Titles(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
@@ -46,3 +73,6 @@ class Titles(models.Model):
 
     def __str__(self):
         return self.name[:20]
+# =======
+#     )
+# >>>>>>> origin/api_review

@@ -135,7 +135,7 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
@@ -149,7 +149,7 @@ AUTH_USER_MODEL = 'api_auth.User'
 AUTHENTICATION_BACKENDS = ('api_auth.backend_auth.EmailOrUsernameModelBackend',)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 USER_ROLES = (
-        ('user', 'Пользователь',),
-        ('moderator', 'Модератор',),
-        ('admin', 'Администратор',),
-    )
+    ('user', 'Пользователь',),
+    ('moderator', 'Модератор',),
+    ('admin', 'Администратор',),
+)

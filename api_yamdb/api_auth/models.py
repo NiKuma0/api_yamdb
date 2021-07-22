@@ -23,7 +23,8 @@ class User(AbstractUser):
         _('никнейм'),
         max_length=150,
         unique=True,
-        help_text=_('Обязательное поле! 150 символов или меньше. Буквы, цифры и @ /./+/-/_'),
+        help_text=_('Обязательное поле! '
+                    '150 символов или меньше. Буквы, цифры и @ /./+/-/_'),
         validators=(UnicodeUsernameValidator(),),
         error_messages={
             'unique': _('Пользователь с таким никнеймом уже существует.'),
@@ -45,7 +46,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    def set_confirmation_code(self, raw_password=get_random_string(4, '0123456789')):
+    def set_confirmation_code(
+            self, raw_password=get_random_string(4, '0123456789')):
         self.confirmation_code = make_password(raw_password)
         self._confirmation_code = raw_password
 
@@ -65,11 +67,16 @@ class User(AbstractUser):
     def get_full_name(self):
         full_name = (self.last_name or None, self.first_name or None)
         if None in full_name:
-            full_name = ((self.last_name or self.first_name) or self.get_short_name(),)
+            full_name = (
+                (self.last_name or self.first_name)
+                or self.get_short_name(),)
         return ' '.join(full_name)
 
     def save(self, *args, **kwargs):
-        self.is_staff, self.is_superuser = is_moderator_role(self.role), is_admin_role(self.role)
+        (self.is_staff,
+         self.is_superuser) = (
+            is_moderator_role(self.role),
+            is_admin_role(self.role))
         super(User, self).save(*args, **kwargs)
 
     @classmethod
@@ -86,7 +93,11 @@ class User(AbstractUser):
 def create_users_from_csv_file(path='data/users.csv'):
     with open(path) as file:
         reader = csv.reader(file)
-        keys = ('id', 'username', 'email', 'role', 'bio', 'first_name', 'last_name')
+        keys = (
+            'id', 'username',
+            'email', 'role',
+            'bio', 'first_name',
+            'last_name')
         for row in reader:
             print(row)
             if row[0] == 'id':
@@ -94,5 +105,3 @@ def create_users_from_csv_file(path='data/users.csv'):
             fields = {keys: values for keys, values in zip(keys, row)}
             fields['pk'] = int(fields['pk'])
             User.objects.create_user(**fields)
-
-

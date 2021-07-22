@@ -21,7 +21,10 @@ class AuthVIew(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
         try:
             user = User.objects.get(email=request.data.get('email'))
             user.set_confirmation_code()
@@ -31,9 +34,13 @@ class AuthVIew(APIView):
                 user.get_full_name(),
                 f'Ваш код: {confirmation_code}'
             )
-            return Response({serializer.data.get('email'): 'Проверьте свою почту'})
+            return Response({
+                serializer.data.get('email'): 'Проверьте свою почту'
+            })
         except User.DoesNotExist:
-            user = User.objects.create_user(username=User.make_random_username(), **serializer.data)
+            user = User.objects.create_user(
+                username=User.make_random_username(),
+                **serializer.data)
             user.set_confirmation_code()
             user.email_user(
                 user.get_full_name(),
@@ -43,7 +50,9 @@ class AuthVIew(APIView):
                  f'Ваш код: {user._confirmation_code}')
             )
             user.save(update_fields=('confirmation_code',))
-            return Response({serializer.data.get('email'): 'Проверьте свою почту'}, status=status.HTTP_201_CREATED)
+            return Response({
+                serializer.data.get('email'): 'Проверьте свою почту'
+            }, status=status.HTTP_201_CREATED)
 
 
 class UserMeView(mixins.RetrieveModelMixin,

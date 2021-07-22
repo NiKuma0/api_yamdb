@@ -1,10 +1,7 @@
-from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin, UserCreationForm
-
-from .permissions import is_moderator_role as is_moder
 
 User = get_user_model()
 
@@ -19,7 +16,9 @@ class UserForm(UserCreationForm):
 class UserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('username', 'first_name', 'last_name',)}),
+        (_('Personal info'), {
+            'fields': ('username', 'first_name', 'last_name',)
+        }),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'role'),
         }),

@@ -4,13 +4,17 @@ from django.contrib.auth.backends import ModelBackend
 
 
 class EmailOrUsernameModelBackend(ModelBackend):
-    def authenticate(self, request, email=None, password=None, username=None, **kwargs):
+    def authenticate(
+            self, request, email=None,
+            password=None, username=None, **kwargs):
         UserModel = get_user_model()
         try:
             user = UserModel.objects.get(Q(email=email) | Q(email=username))
         except UserModel.DoesNotExist:
             return None
         else:
-            if user.check_password(password) or user.check_confirmation_code(password):
+            perm = (user.check_password(password)
+                    or user.check_confirmation_code(password))
+            if perm:
                 return user
         return None

@@ -1,7 +1,10 @@
 from django.contrib.auth.base_user import BaseUserManager, get_random_string
 from django.conf import settings
 
-from .permissions import is_moderator_role as is_moder, is_admin_role as is_admin
+from .permissions import (
+    is_moderator_role as is_moder,
+    is_admin_role as is_admin
+)
 
 ROLES = [role[0] for role in settings.USER_ROLES]
 
@@ -37,7 +40,3 @@ class UserManager(BaseUserManager):
 
     def make_random_password(self, length=10, allowed_chars='1234567890'):
         return get_random_string(length, allowed_chars)
-
-    def create(self, **kwargs):
-        # super(UserManager, self).create()
-        return self.create_user(**kwargs)
