@@ -12,9 +12,7 @@ class EmailOrUsernameModelBackend(ModelBackend):
             user = UserModel.objects.get(Q(email=email) | Q(email=username))
         except UserModel.DoesNotExist:
             return None
-        else:
-            perm = (user.check_password(password)
-                    or user.check_confirmation_code(password))
-            if perm:
-                return user
+        if (user.check_password(password)
+                or user.check_confirmation_code(password)):
+            return user
         return None

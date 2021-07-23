@@ -1,5 +1,6 @@
+from datetime import datetime
 from django.db import models
-# from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator
 
 
 class Categories(models.Model):
@@ -7,7 +8,7 @@ class Categories(models.Model):
     slug = models.SlugField(unique=True, primary_key=True)
 
     class Meta:
-        ordering = ("name",)
+        ordering = ('name',)
 
     def __str__(self):
         return self.slug[:20]
@@ -18,44 +19,19 @@ class Genres(models.Model):
     slug = models.SlugField(unique=True, primary_key=True)
 
     class Meta:
-        ordering = ("name",)
+        ordering = ('name',)
+        verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
 
     def __str__(self):
         return self.slug[:20]
 
 
-# =======
-# from django.core.validators import MaxValueValidator
-#
-#
-# class Categories(models.Model):
-#     name = models.CharField(max_length=200)
-#     slug = models.SlugField(unique=True)
-#
-#     class Meta:
-#         ordering = ("name",)
-#
-#     def __str__(self):
-#         return self.name[:20]
-#
-#
-# class Genres(models.Model):
-#     name = models.CharField(max_length=200)
-#     slug = models.SlugField(unique=True)
-#
-#     class Meta:
-#         ordering = ("name",)
-#
-#     def __str__(self):
-#         return self.name[:20]
-#
-#
-# >>>>>>> origin/api_review
 class Titles(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     year = models.PositiveSmallIntegerField(
-        # validators=[MaxValueValidator(datetime.now().year, message='')],
+        validators=(MaxValueValidator(datetime.now().year, message=''),),
         blank=True,
         null=True
     )
@@ -73,6 +49,8 @@ class Titles(models.Model):
 
     def __str__(self):
         return self.name[:20]
-# =======
-#     )
-# >>>>>>> origin/api_review
+
+    class Meta:
+        ordering = ('-year',)
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведении'

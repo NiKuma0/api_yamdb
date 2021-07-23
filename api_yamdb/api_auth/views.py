@@ -14,6 +14,38 @@ class TokenView(TokenViewBase):
     serializer_class = TokenSerializer
 
 
+def authorization(user, serializer):
+    user.set_confirmation_code()
+    confirmation_code = user._confirmation_code
+    user.save(update_fields=('confirmation_code',))
+    user.email_user(
+        user.get_full_name(),
+        f'Ваш код: {confirmation_code}'
+    )
+    return Response({
+        serializer.data.get('email'): 'Проверьте свою почту'
+    })
+
+
+def registration(serializer):
+    user = User.objects.create_user(
+        username=User.make_random_username(),
+        **serializer.data)
+    user.set_confirmation_code()
+    user.email_user(
+        user.get_full_name(),
+        ('Регистрация прошла успешно!\n'
+         'Для выс мы сгенерировали пароль и никнейм!\n'
+         f'Ваш никнейм: {user.username}\n'
+         f'Ваш код: {user._confirmation_code}')
+    )
+    user.save(update_fields=('confirmation_code',))
+    return Response({
+        serializer.data.get('email'): 'Проверьте свою почту'},
+        status=status.HTTP_201_CREATED
+    )
+
+
 class AuthVIew(APIView):
     serializer_class = AuthSerializer
     permission_classes = (permissions.AllowAny,)
@@ -27,32 +59,9 @@ class AuthVIew(APIView):
             )
         try:
             user = User.objects.get(email=request.data.get('email'))
-            user.set_confirmation_code()
-            confirmation_code = user._confirmation_code
-            user.save(update_fields=('confirmation_code',))
-            user.email_user(
-                user.get_full_name(),
-                f'Ваш код: {confirmation_code}'
-            )
-            return Response({
-                serializer.data.get('email'): 'Проверьте свою почту'
-            })
         except User.DoesNotExist:
-            user = User.objects.create_user(
-                username=User.make_random_username(),
-                **serializer.data)
-            user.set_confirmation_code()
-            user.email_user(
-                user.get_full_name(),
-                ('Регистрация прошла успешно!\n'
-                 'Для выс мы сгенерировали пароль и никнейм!\n'
-                 f'Ваш никнейм: {user.username}\n'
-                 f'Ваш код: {user._confirmation_code}')
-            )
-            user.save(update_fields=('confirmation_code',))
-            return Response({
-                serializer.data.get('email'): 'Проверьте свою почту'
-            }, status=status.HTTP_201_CREATED)
+            return registration(serializer)
+        return authorization(user, serializer)
 
 
 class UserMeView(mixins.RetrieveModelMixin,

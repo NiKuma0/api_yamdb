@@ -148,8 +148,3 @@ SIMPLE_JWT = {
 AUTH_USER_MODEL = 'api_auth.User'
 AUTHENTICATION_BACKENDS = ('api_auth.backend_auth.EmailOrUsernameModelBackend',)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-USER_ROLES = (
-    ('user', 'Пользователь',),
-    ('moderator', 'Модератор',),
-    ('admin', 'Администратор',),
-)

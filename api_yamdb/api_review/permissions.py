@@ -7,5 +7,4 @@ class ReviewAndCommentPermissions(permissions.IsAuthenticatedOrReadOnly):
         if request.method in permissions.SAFE_METHODS:
             return True
         return (obj.author == request.user
-                or request.user.role
-                in ('moderator', 'admin'))
+                or request.user.is_moderator)

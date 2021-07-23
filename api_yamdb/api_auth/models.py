@@ -1,15 +1,18 @@
-import csv
 from django.db import models
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser, UnicodeUsernameValidator
 from django.contrib.auth.base_user import get_random_string
 from django.contrib.auth.hashers import check_password, make_password
 
 from .managers import UserManager
-from .permissions import is_admin_role, is_moderator_role
+# from .permissions import is_admin_role, is_moderator_role
 
-ROLES = settings.USER_ROLES
+ROLES = (
+    ('user', 'Пользователь',),
+    ('moderator', 'Модератор',),
+    ('admin', 'Администратор',),
+)
+roles = [role[0] for role in ROLES]
 
 
 class User(AbstractUser):
@@ -29,8 +32,6 @@ class User(AbstractUser):
         error_messages={
             'unique': _('Пользователь с таким никнеймом уже существует.'),
         },
-        # blank=True,
-        # null=True
     )
     bio = models.CharField(_('О себе.'), max_length=150, blank=True)
     role = models.CharField(choices=roles, default=roles[0][0], max_length=30)
@@ -45,6 +46,14 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return self.email[:20]
+
+    class Meta:
+        ordering = ('username',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def set_confirmation_code(
             self, raw_password=get_random_string(4, '0123456789')):
@@ -75,8 +84,8 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         (self.is_staff,
          self.is_superuser) = (
-            is_moderator_role(self.role),
-            is_admin_role(self.role))
+            self.is_moderator,
+            self.is_admin)
         super(User, self).save(*args, **kwargs)
 
     @classmethod
@@ -86,22 +95,10 @@ class User(AbstractUser):
             return cls.make_random_username()
         return username
 
-    def __str__(self):
-        return self.email[:20]
+    @property
+    def is_admin(self):
+        return self.role in roles[2:]
 
-
-def create_users_from_csv_file(path='data/users.csv'):
-    with open(path) as file:
-        reader = csv.reader(file)
-        keys = (
-            'id', 'username',
-            'email', 'role',
-            'bio', 'first_name',
-            'last_name')
-        for row in reader:
-            print(row)
-            if row[0] == 'id':
-                continue
-            fields = {keys: values for keys, values in zip(keys, row)}
-            fields['pk'] = int(fields['pk'])
-            User.objects.create_user(**fields)
+    @property
+    def is_moderator(self):
+        return self.role in roles[1:]

@@ -12,5 +12,5 @@ class FilterSetTitle(rest_framework.FilterSet):
                                       lookup_expr='exact')
 
     class Meta:
-        fields = ['name', 'genre', 'category', 'year']
+        fields = ('name', 'genre', 'category', 'year')
         model = Titles
