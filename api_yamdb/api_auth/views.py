@@ -1,4 +1,4 @@
-from rest_framework import status, viewsets, permissions, mixins
+from rest_framework import viewsets, permissions, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenViewBase
@@ -20,11 +20,7 @@ class AuthVIew(APIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer.is_valid(raise_exception=True)
         user = User.objects.get_or_create(**serializer.data)
         user.set_confirmation_code()
         user.email_user(

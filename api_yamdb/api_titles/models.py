@@ -31,7 +31,12 @@ class Titles(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     year = models.PositiveSmallIntegerField(
-        validators=(MaxValueValidator(datetime.now().year, message=''),),
+        validators=(
+            MaxValueValidator(
+                datetime.now().year,
+                message='Нельзя заглянуть в будущие!'
+            ),
+        ),
         blank=True,
         null=True
     )

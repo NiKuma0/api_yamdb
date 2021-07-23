@@ -5,18 +5,22 @@ from django.contrib.auth.base_user import get_random_string
 from django.contrib.auth.hashers import check_password, make_password
 
 from .managers import UserManager
-# from .permissions import is_admin_role, is_moderator_role
 
-ROLES = (
-    ('user', 'Пользователь',),
-    ('moderator', 'Модератор',),
-    ('admin', 'Администратор',),
-)
-roles = [role[0] for role in ROLES]
+
+class Role:
+    ROLES = (
+        ('user', 'Пользователь',),
+        ('moderator', 'Модератор',),
+        ('admin', 'Администратор',),
+    )
+    roles = [role[0] for role in ROLES]
+    ADMIN_PERM = roles[2:]
+    MODERATOR_PERM = roles[1:]
+    USER_PERM = roles
 
 
 class User(AbstractUser):
-    roles = ROLES
+    roles = Role.ROLES
     email = models.EmailField(
         _('email адресс'),
         unique=True,
@@ -92,8 +96,8 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role in roles[2:]
+        return self.role in Role.ADMIN_PERM
 
     @property
     def is_moderator(self):
-        return self.role in roles[1:]
+        return self.role in Role.MODERATOR_PERM
