@@ -32,6 +32,8 @@ class User(AbstractUser):
         error_messages={
             'unique': _('Пользователь с таким никнеймом уже существует.'),
         },
+        blank=False,
+        null=True
     )
     bio = models.CharField(_('О себе.'), max_length=150, blank=True)
     role = models.CharField(choices=roles, default=roles[0][0], max_length=30)
@@ -87,13 +89,6 @@ class User(AbstractUser):
             self.is_moderator,
             self.is_admin)
         super(User, self).save(*args, **kwargs)
-
-    @classmethod
-    def make_random_username(cls):
-        username = 'User' + get_random_string(4, '0123456789')
-        if cls.objects.filter(username=username).exists():
-            return cls.make_random_username()
-        return username
 
     @property
     def is_admin(self):

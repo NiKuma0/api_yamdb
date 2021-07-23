@@ -42,7 +42,7 @@ class GenresViewSet(RestViewSets):
 
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny(), ]
+            return (permissions.AllowAny(), )
         return super(GenresViewSet, self).get_permissions()
 
 
@@ -55,5 +55,5 @@ class TitleViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.request.method == 'GET':
-            return [permissions.AllowAny()]
+            return (permissions.AllowAny(),)
         return super(TitleViewSet, self).get_permissions()
